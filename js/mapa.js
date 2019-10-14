@@ -1,23 +1,20 @@
 var map;
-
-var directionsDisplay; 
-
+var directionsDisplay; // Instanciaremos ele mais tarde, que será o nosso google.maps.DirectionsRenderer
 var directionsService = new google.maps.DirectionsService();
  
 function initialize() {
-   directionsDisplay = new google.maps.DirectionsRenderer();
-
+   directionsDisplay = new google.maps.DirectionsRenderer(); // Instanciando...
    var latlng = new google.maps.LatLng(-18.8800397, -47.05878999999999);
  
    var options = {
-      zoom: 10,
+      zoom: 5,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
    };
  
    map = new google.maps.Map(document.getElementById("mapa"), options);
    directionsDisplay.setMap(map); // Relacionamos o directionsDisplay com o mapa desejado
-   directionsDisplay.setPanel(document.getElementById("trajeto-texto")); 
+}
  
 initialize();
  
@@ -26,7 +23,7 @@ $("form").submit(function(event) {
  
    var enderecoPartida = $("#txtEnderecoPartida").val();
    var enderecoChegada = $("#txtEnderecoChegada").val();
-
+ 
    var geocoder= new google.maps.Geocoder();
 
    geocoder.geocode({ 'address': enderecoPartida + ', Brasil', 'region': 'BR' }, function (results, status) {
@@ -55,7 +52,6 @@ $("form").submit(function(event) {
       destination: enderecoChegada, // destino
       travelMode: google.maps.TravelMode.DRIVING // meio de transporte, nesse caso, de carro
    };
-
  
    directionsService.route(request, function(result, status) {
       if (status == google.maps.DirectionsStatus.OK) { // Se deu tudo certo
@@ -63,3 +59,4 @@ $("form").submit(function(event) {
       }
    });
 });
+ 
