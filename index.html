@@ -1,0 +1,35 @@
+<form method="post" action="testa.html">
+   <fieldset>
+      <legend>Criar rotas</legend>
+                
+      <div>
+         <label for="txtEnderecoPartida">Endereço de partida:</label>
+         <input type="text" id="txtEnderecoPartida" name="txtEnderecoPartida" />
+      </div>
+                
+      <div>
+         <label for="txtEnderecoChegada">Endereço de chegada:</label>
+         <input type="text" id="txtEnderecoChegada" name="txtEnderecoChegada" />
+      </div>
+                
+      <div>
+         <input type="submit" id="btnEnviar" name="btnEnviar" value="Enviar" />
+      </div>
+   </fieldset>
+</form>
+    
+<div id="mapa" style="height: 500px; width: 700px"></div>
+<div id="trajeto-texto" style="height: 300px; width: 200px"></div> // Elemento para exibição
+        
+<script src="js/jquery.min.js"></script>
+  
+<!-- Maps API Javascript -->
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyCDHfWrHRDjVc5-apdPaz9XtBzKa1YsK08"></script>
+<!-- Arquivo de inicialização do mapa -->
+<script src="js/mapa.js"></script>
+<!-- Autocomplete -->
+<script type="text/javascript" src="js/jquery-ui.custom.min.js"></script>
+
+
+ 
+
