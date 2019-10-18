@@ -21,7 +21,7 @@ def imprime_lista():
 
 
 def build_heap(breakpoints):
-    heap_elts = [(item[1], item) for item in breakpoints
+    heap_elts = [(item[1], item) for item in breakpoints]
     heapq.heapify(heap_elts)  
 
     # Imprime Heap
