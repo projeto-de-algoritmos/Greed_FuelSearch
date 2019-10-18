@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*
 import heapq
 
 # Defining temporary model data
 
 lista = {"Origem1": [{"destino1": [("posto1", 2.0), ("posto2", 5.0)]}, {"destino2": [("posto3", 80.0), ("posto4", 50.0)]}]
                     ,"Origem2": [{"destino12": [("posto12", 2.0), ("posto22", 5.0)]}, {"destino22": [("posto32", 80.0), ("posto42", 50.0)]}]
-                    } 
+                    }
 
 def imprime_lista():
     for origem in lista:
@@ -22,7 +23,7 @@ def imprime_lista():
 
 def build_heap(breakpoints):
     heap_elts = [(item[1], item) for item in breakpoints]
-    heapq.heapify(heap_elts)  
+    heapq.heapify(heap_elts)
 
     # Imprime Heap
     while len(heap_elts) > 0:
@@ -34,14 +35,14 @@ def get_destiny_data(origem, wanted_destino):
         for destino in (lista[origem])[i]:
             if destino == wanted_destino:
                  return ((lista[origem])[i])[destino] ## Retorna vetor de tuplas (postos e distâncias)
-       
+
 
 # Com a mudança, receberá apenas o vetor final de postos
 
 def select_breakpoints_algorithm(origem, destino):
-    # Pega os postos que existem entre origem e destino com suas distâncias 
+    # Pega os postos que existem entre origem e destino com suas distâncias
     postos = get_destiny_data(origem, destino)
-    # Ordena pelos menores valores 
+    # Ordena pelos menores valores
     build_heap(postos)
     breakpoints_selected = {}
     current_location = 0
