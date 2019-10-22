@@ -80,17 +80,22 @@ $("form").submit( async function(event) {
   }
   const latitudePartida = Number(localStorage.getItem('PartidaLat'));
   const longitudePartida = Number(localStorage.getItem('PartidaLong'));
+  const latitudeChegada = Number(localStorage.getItem('ChegadaLat'));
+  const longitudeChegada = Number(localStorage.getItem('ChegadaLong'));
 
 
   var localizacao_origem = new google.maps.LatLng(latitude_partida,longitude_partida);
   var pyrmont1 = new google.maps.LatLng(-33.8665433,151.1956316);
-  var pyrmont = new google.maps.LatLng(latitudePartida, longitudePartida);
+  var sw = new google.maps.LatLng(latitudePartida, longitudeChegada);
+  console.log('partida: ' + sw);
+  var ne = new google.maps.LatLng(latitudeChegada, longitudePartida);
+  console.log('chegada: '+ ne);
+  var pyrmont = new google.maps.LatLngBounds(sw, ne);
 
   console.log(pyrmont)
 
   var request = {
-    location: pyrmont,
-    radius: '5000000',
+    bounds: pyrmont,
     type: ['gas_station']
   };
 
@@ -137,4 +142,78 @@ $("form").submit( async function(event) {
       console.log("Entrou: " + status + " Resultados:" + results);
     }
   }
+
+  function haversine(lat1, lon1, lat2, lon2) {
+    Number.prototype.toRad = function() {
+      return this * Math.PI / 180;
+    }
+
+    var R = 6371; // km
+    //has a problem with the .toRad() method below.
+    var x1 = lat2-lat1;
+    var dLat = x1.toRad();
+    var x2 = lon2-lon1;
+    var dLon = x2.toRad();
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+
+    return(d);
+  }
+
+
+  function selectingBreakpoints(latitudePartida, longitudePartida, latitudeChegada, longitudeChegada, postos, autonomia) {
+    inicio = {lat: latitudePartida, lon: longitudePartida}
+    fim = {lat: latitudeChegada, lon: longitudeChegada}
+
+    // Objeto com postos deve ser enviado neste formato:  posto: {lat: '', lon: ''}
+    postos = {
+      ...postos,
+      inicio: inicio,
+      fim: fim
+    }
+    distPosto = {}
+
+    for (var posto in postos) {
+      distPosto[posto] = haversine(Number(inicio.lat), Number(inicio.lon), Number(postos[posto].lat), Number(postos[posto].lon))
+    }
+
+    postosOrdenados = Object.keys(distPosto).sort(function(a,b){return distPosto[a]-distPosto[b]})
+
+    postosVisitados = {};
+
+    x = 0;
+    for (var i = 0; i < postosOrdenados.length; i++) {
+      postoAtual = postosOrdenados[i];
+      distAtual = distPosto[postoAtual];
+
+      if (distAtual > (x + autonomia)) {
+        postoAnt = postosOrdenados[--i];
+        distAnt = distPosto[postoAnt];
+        if (distAnt !== x) {
+          x = distAnt;
+          postosVisitados[postoAnt] = distAnt;
+        } else {
+          return null;
+        }
+      }
+    }
+
+    return postosVisitados;
+  }
+
+  // postos = {
+  //   p1: {lat: '42.806911', lon: '-72.290611'},
+  //   p2: {lat: '42.816911', lon: '-72.290611'},
+  //   p3: {lat: '42.856911', lon: '-72.290611'},
+  //   p4: {lat: '42.866911', lon: '-72.290611'},
+  //   p5: {lat: '42.876911', lon: '-72.290611'},
+  //   p6: {lat: '42.906911', lon: '-72.290611'},
+  //   p7: {lat: '42.916911', lon: '-72.290611'},
+  //   p8: {lat: '42.956911', lon: '-72.290611'},
+  //   p9: {lat: '42.996911', lon: '-72.290611'},
+  // }
+  // console.log(selectingBreakpoints(42.75, -72.290611, 43, -72.290611, postos, 7.5));
 });
